@@ -1,0 +1,44 @@
+{
+  "name": "artillery-plugin-influxdb",
+  "version": "0.0.2",
+  "description": "Plugin for Artillery.IO that records response data into InfluxDB.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"TESTS TBD\" && exit 0",
+    "jscs": "jscs . lib",
+    "jshint": "jshint .",
+    "validate": "npm ls",
+    "lint": "jshint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nordstrom/artillery-plugin-influxdb.git"
+  },
+  "keywords": [
+    "artillery",
+    "plugin",
+    "influxdb"
+  ],
+  "author": "Greg Smith <greg.w.smith@nordstrom.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nordstrom/artillery-plugin-influxdb/issues"
+  },
+  "homepage": "https://github.com/nordstrom/artillery-plugin-influxdb#readme",
+  "dependencies": {
+    "influx": "^4.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jscs": "^3.0.5",
+    "jshint": "^2.9.2",
+    "mocha": "^2.5.3",
+    "precommit-hook": "^3.0.0"
+  },
+  "pre-commit": [
+    "jscs",
+    "jshint",
+    "validate",
+    "test"
+  ]
+}
