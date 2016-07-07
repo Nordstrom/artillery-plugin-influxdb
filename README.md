@@ -12,6 +12,7 @@ To use:
       "config": {
         "plugins": {
             "influxdb": {
+                "test_name": "my_load_test_case",
                 "influx": {
                     "host": "my.influx.server.com",
                     "username": "joe_developer",
