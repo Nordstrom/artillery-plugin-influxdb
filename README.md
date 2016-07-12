@@ -4,7 +4,7 @@ Plugin for Artillery.IO that records response data into InfluxDB.
 To use:
 
 1. `npm install -g artillery`
-2. `npm install artillery-Plugin-influxdb`
+2. `npm install artillery-plugin-influxdb`
 3. Add `influxdb` Plugin config to your "`hello.json`" Artillery script
 
     ```json
