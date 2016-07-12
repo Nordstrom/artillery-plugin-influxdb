@@ -16,7 +16,7 @@ To use:
                 "tags": {
                     "environment": "joes-dev-box",
                     "host": "joe-dev.somewhere.org"
-                }
+                },
                 "influx": {
                     "host": "my.influx.server.com",
                     "username": "joe_developer",
