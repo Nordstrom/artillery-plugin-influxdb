@@ -13,6 +13,10 @@ To use:
         "plugins": {
             "influxdb": {
                 "test_name": "my_load_test_case",
+                "tags": {
+                    "environment": "joes-dev-box",
+                    "host": "joe-dev.somewhere.org"
+                }
                 "influx": {
                     "host": "my.influx.server.com",
                     "username": "joe_developer",
