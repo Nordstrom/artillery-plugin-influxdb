@@ -1,4 +1,4 @@
-# artillery-Plugin-influxdb
+# artillery-plugin-influxdb
 Plugin for Artillery.IO that records response data into InfluxDB.
 
 To use:
