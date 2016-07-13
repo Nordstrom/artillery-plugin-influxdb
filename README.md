@@ -33,6 +33,11 @@ To use:
 
 This will cause every latency to be published to the given InfluxDB instance.
 
+## Using environment variables to store credentials
+
+The environment variables `ARTILLERY_USERNAME` and `ARTILLERY_PASSWORD` may be set instead of
+passing 'username' and/or 'password' properties in the config file.
+
 For more information, see:
 
 * https://github.com/shoreditch-ops/artillery
