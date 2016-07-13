@@ -35,7 +35,7 @@ This will cause every latency to be published to the given InfluxDB instance.
 
 ## Using environment variables to store credentials
 
-The environment variables `ARTILLERY_USERNAME` and `ARTILLERY_PASSWORD` may be set instead of
+The environment variables `INFLUX_USERNAME` and `INFLUX_PASSWORD` may be set instead of
 passing 'username' and/or 'password' properties in the config file.
 
 For more information, see:
