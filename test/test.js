@@ -26,8 +26,12 @@ Plugin = require(path.join(__dirname, '../lib/influxdb.js'));
 
 describe('Artillery Influx DB plug-in must correctly validate configurations', function() {
     afterEach(function() {
-        // Delete the cached configuration before each test
+        // Delete the cached configuration after each test
         delete Plugin.impl.config;
+
+        // Delete environment variables created
+        delete process.env[Plugin.constants.ENV_INFLUX_PASSWORD];
+        delete process.env[Plugin.constants.ENV_INFLUX_USERNAME];
     });
 
     it('accepts a valid configuration', function() {
@@ -67,10 +71,25 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
                     database: 'any-db-name'
                 }
             });
-        }).to.throw(Error, /influx.host/);
+        }).to.throw();
     });
 
-    it('requires influx.username in the configuration', function() {
+    it('accepts username from the environment', function() {
+        process.env[Plugin.constants.ENV_INFLUX_USERNAME] = 'a-user';
+
+        expect(function() {
+            Plugin.impl.validateConfig({
+                test_name: 'this is a valid test name',
+                influx: {
+                    host: 'my-test-host-name',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).not.to.throw();
+    });
+
+    it('requires influx.username in the configuration or environment', function() {
         expect(function() {
             Plugin.impl.validateConfig({
                 test_name: 'this is a valid test name',
@@ -83,7 +102,22 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
         }).to.throw(Error, /influx.username/);
     });
 
-    it('requires influx.password in the configuration', function() {
+    it('accepts password from the environment', function() {
+        process.env[Plugin.constants.ENV_INFLUX_PASSWORD] = 'p@ssw0rd';
+
+        expect(function() {
+            Plugin.impl.validateConfig({
+                test_name: 'this is a valid test name',
+                influx: {
+                    host: 'my-test-host-name',
+                    username: 'a-user',
+                    database: 'any-db-name'
+                }
+            });
+        }).not.to.throw();
+    });
+
+    it('requires influx.password in the configuration or environment', function() {
         expect(function() {
             Plugin.impl.validateConfig({
                 test_name: 'this is a valid test name',
