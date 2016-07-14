@@ -4,7 +4,7 @@ var mock = require('mock-require'),
     expect = require('chai').expect,
     path = require('path'),
     Plugin,
-    writtenPoints,
+    writePointsArguments,
     influxConstructorCalled;
 
 mock('influx', function() {
@@ -12,7 +12,7 @@ mock('influx', function() {
 
     return {
         writePoints: function(testName, points, callback) {
-            writtenPoints = {
+            writePointsArguments = {
                 testName: testName,
                 points: points,
                 callback: callback
@@ -173,7 +173,7 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
 
     beforeEach(function() {
         influxConstructorCalled = false;
-        writtenPoints = null;
+        writePointsArguments = null;
     });
 
     afterEach(function() {
@@ -207,8 +207,37 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
         });
 
         /*jshint -W030 */
-        expect(writtenPoints).to.not.be.null;
+        expect(writePointsArguments).to.not.be.null;
         /*jshint +W030 */
     });
-});
 
+    it('will raise an exception if an error is returned', function() {
+        createPluginInstance();
+
+        // Simulate the done event by calling into the report function
+        actualReportFunction({
+            aggregate: {
+                latencies: []
+            }
+        });
+
+        expect(function() {
+            writePointsArguments.callback({ message: 'THIS IS AN ERROR' });
+        }).to.throw(Error, /THIS IS AN ERROR/);
+    });
+
+    it('will not raise an exception if an error is not returned', function() {
+        createPluginInstance();
+
+        // Simulate the done event by calling into the report function
+        actualReportFunction({
+            aggregate: {
+                latencies: []
+            }
+        });
+
+        expect(function() {
+            writePointsArguments.callback(null);
+        }).to.not.throw();
+    });
+});
