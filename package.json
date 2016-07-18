@@ -4,7 +4,7 @@
   "description": "Plugin for Artillery.IO that records response data into InfluxDB.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/test.js",
+    "test": "mocha test",
     "jscs": "jscs .",
     "jshint": "jshint .",
     "validate": "npm ls",
