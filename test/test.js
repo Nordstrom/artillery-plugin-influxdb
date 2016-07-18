@@ -48,7 +48,23 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
         }).not.to.throw();
     });
 
-    it('requires testName in the configuration', function() {
+    it('accepts an uses old test_name configuration value', function() {
+        expect(function() {
+            Plugin.impl.validateConfig({
+                test_name: 'this is a valid test name',
+                influx: {
+                    host: 'my-test-host-name',
+                    username: 'a-user',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).not.to.throw();
+
+        expect(Plugin.impl.config.testName).to.equal('this is a valid test name');
+    });
+
+    it('requires testName or test_name in the configuration', function() {
         expect(function() {
             Plugin.impl.validateConfig({
                 influx: {
