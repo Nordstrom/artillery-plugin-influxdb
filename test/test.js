@@ -37,7 +37,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
     it('accepts a valid configuration', function() {
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
                     username: 'a-user',
@@ -48,7 +48,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
         }).not.to.throw();
     });
 
-    it('requires test_name in the configuration', function() {
+    it('requires testName in the configuration', function() {
         expect(function() {
             Plugin.impl.validateConfig({
                 influx: {
@@ -58,13 +58,13 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
                     database: 'any-db-name'
                 }
             });
-        }).to.throw(Error, /test_name/);
+        }).to.throw(Error, /testName/);
     });
 
     it('requires influx.host in the configuration', function() {
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     username: 'a-user',
                     password: 'p@ssw0rd',
@@ -79,7 +79,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
 
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
                     password: 'p@ssw0rd',
@@ -92,7 +92,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
     it('requires influx.username in the configuration or environment', function() {
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
                     password: 'p@ssw0rd',
@@ -107,7 +107,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
 
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
                     username: 'a-user',
@@ -120,7 +120,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
     it('requires influx.password in the configuration or environment', function() {
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
                     username: 'a-user',
@@ -133,7 +133,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
     it('requires influx.database in the configuration', function() {
         expect(function() {
             Plugin.impl.validateConfig({
-                test_name: 'this is a valid test name',
+                testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
                     username: 'a-user',
@@ -141,6 +141,27 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
                 }
             });
         }).to.throw(Error, /influx.database/);
+    });
+
+    it('will generate a testRunId if one is not provided', function() {
+        expect(function() {
+            Plugin.impl.validateConfig({
+                testName: 'this is a valid test name',
+                influx: {
+                    host: 'my-test-host-name',
+                    username: 'a-user',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).not.to.throw();
+
+        /*jshint -W030 */
+        expect(Plugin.impl.config.testRunId).not.to.be.undefined;
+        expect(Plugin.impl.config.testRunId).not.to.be.null;
+        /*jshint +W030 */
+        expect(Plugin.impl.config.testRunId).to.be.a('string');
+        expect(Plugin.impl.config.testRunId.length).to.equal(36);
     });
 });
 
@@ -152,7 +173,7 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
         new Plugin({
                 plugins: {
                     influxdb: {
-                        test_name: '45215-PERS-FDN-PreferredStore-Get-test-loadAndMonitor',
+                        testName: '45215-PERS-FDN-PreferredStore-Get-test-loadAndMonitor',
                         influx: {
                             host: 'ec2-52-10-71-7.us-west-2.compute.amazonaws.com',
                             username: 'artillery_reporter',
