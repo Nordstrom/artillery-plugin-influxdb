@@ -12,7 +12,7 @@ To use:
       "config": {
         "plugins": {
             "influxdb": {
-                "test_name": "my_load_test_case",
+                "testName": "my_load_test_case",
                 "tags": {
                     "environment": "joes-dev-box",
                     "host": "joe-dev.somewhere.org"
