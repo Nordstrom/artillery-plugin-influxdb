@@ -1,6 +1,6 @@
 {
   "name": "artillery-plugin-influxdb",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Plugin for Artillery.IO that records response data into InfluxDB.",
   "main": "index.js",
   "scripts": {
