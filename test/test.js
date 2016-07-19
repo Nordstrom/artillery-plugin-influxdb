@@ -173,11 +173,11 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
         }).not.to.throw();
 
         /*jshint -W030 */
-        expect(Plugin.impl.config.testRunId).not.to.be.undefined;
-        expect(Plugin.impl.config.testRunId).not.to.be.null;
+        expect(Plugin.impl.config.tags.testRunId).not.to.be.undefined;
+        expect(Plugin.impl.config.tags.testRunId).not.to.be.null;
         /*jshint +W030 */
-        expect(Plugin.impl.config.testRunId).to.be.a('string');
-        expect(Plugin.impl.config.testRunId.length).to.equal(36);
+        expect(Plugin.impl.config.tags.testRunId).to.be.a('string');
+        expect(Plugin.impl.config.tags.testRunId.length).to.equal(36);
     });
 });
 
