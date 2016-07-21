@@ -13,6 +13,8 @@ To use:
         "plugins": {
             "influxdb": {
                 "testName": "my_load_test_case",
+                "measurementName": "Latency",
+                "testRunId": "342-233-221",
                 "tags": {
                     "environment": "joes-dev-box",
                     "host": "joe-dev.somewhere.org"
@@ -32,6 +34,12 @@ To use:
 4. `artillery run hello.json`
 
 This will cause every latency to be published to the given InfluxDB instance.
+
+If no `testRunId` property is provided, a UUID is generated for the run.
+
+The `measurementName` config property is optional, 'latency' will be used by default.
+
+The `tags` property is also optional. The `testRunId` and `testName` are always written as tags with any sample reported.
 
 ## Using environment variables to store credentials
 
