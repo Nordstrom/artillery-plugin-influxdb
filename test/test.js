@@ -4,19 +4,19 @@ var mock = require('mock-require'),
     expect = require('chai').expect,
     path = require('path'),
     Plugin,
-    writePointsArguments,
-    influxConstructorCalled;
+    influxConstructorCalled,
+    influxWriteInvocations;
 
 mock('influx', function() {
     influxConstructorCalled = true;
 
     return {
         writePoints: function(measurementName, points, callback) {
-            writePointsArguments = {
+            influxWriteInvocations.push({
                 measurementName: measurementName,
                 points: points,
                 callback: callback
-            };
+            });
         }
     };
 });
@@ -183,8 +183,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
 });
 
 describe('Artillery Influx DB plug-in must report results once testing is completed.', function() {
-    var actualEventName,
-        actualReportFunction;
+    var onEventHooks;
 
     function createPluginInstance() {
         new Plugin({
@@ -202,17 +201,28 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
                 }
             },
             {
-                on: function(eventName, reportFunction) {
-                    actualEventName = eventName;
-                    actualReportFunction = reportFunction;
+                on: function (eventName, reportFunction) {
+                    onEventHooks.push({
+                        actualEventName: eventName,
+                        actualReportFunction: reportFunction
+                    });
                 }
             }
         );
     }
 
+    function reportLatencies(latencies, errors) {
+        // Simulate artillery results event by calling into the report function
+        onEventHooks[0].actualReportFunction({
+            latencies: latencies,
+            errors: errors
+        });
+    }
+
     beforeEach(function() {
+        influxWriteInvocations = [];
+        onEventHooks = [];
         influxConstructorCalled = false;
-        writePointsArguments = null;
         createPluginInstance();
     });
 
@@ -221,70 +231,76 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
         delete Plugin.impl.config;
     });
 
-    it('registers for the done event on the event emitter', function() {
-        expect(actualEventName).to.equal('done');
+    it('registers for the stats event on the event emitter', function() {
+        expect(onEventHooks[0].actualEventName).to.equal('stats');
         /*jshint -W030 */
-        expect(actualReportFunction).to.not.be.null;
-        expect(actualReportFunction).to.not.be.undefined;
+        expect(onEventHooks[0].actualReportFunction).to.not.be.null;
+        expect(onEventHooks[0].actualReportFunction).to.not.be.undefined;
         /*jshint +W030 */
     });
 
-    it('uses influx to write results once done event is raised', function() {
+    it('uses influx to write results once stats event is raised', function() {
         /*jshint -W030 */
-        expect(actualReportFunction).to.not.be.null;
-        expect(actualReportFunction).to.not.be.undefined;
+        expect(onEventHooks[0].actualReportFunction).to.not.be.null;
+        expect(onEventHooks[0].actualReportFunction).to.not.be.undefined;
         /*jshint +W030 */
 
-        // Simulate the done event by calling into the report function
-        actualReportFunction({
-            aggregate: {
-                latencies: []
-            }
-        });
+        reportLatencies([]);
 
         /*jshint -W030 */
-        expect(writePointsArguments).to.not.be.null;
+        expect(influxWriteInvocations[0].points).to.not.be.null;
         /*jshint +W030 */
     });
 
-    it('will raise an exception if an error is returned', function() {
-        // Simulate the done event by calling into the report function
-        actualReportFunction({
-            aggregate: {
-                latencies: []
-            }
-        });
+    it('will raise an exception if an error is returned when reporting to InfluxDB', function() {
+        reportLatencies([]);
 
         expect(function() {
-            writePointsArguments.callback({ message: 'THIS IS AN ERROR' });
+            influxWriteInvocations[0].callback({ message: 'THIS IS AN ERROR' });
         }).to.throw(Error, /THIS IS AN ERROR/);
     });
 
-    it('will not raise an exception if an error is not returned', function() {
-        // Simulate the done event by calling into the report function
-        actualReportFunction({
-            aggregate: {
-                latencies: []
-            }
-        });
+    it('will not raise an exception if an error is not returned when reporting from InfluxDB', function() {
+        reportLatencies([]);
 
         expect(function() {
-            writePointsArguments.callback(null);
+            influxWriteInvocations[0].callback(null);
         }).to.not.throw();
     });
 
-    it('uses the configured measurementName', function() {
-        // Simulate the done event by calling into the report function
-        actualReportFunction({
-            aggregate: {
-                latencies: []
-            }
-        });
+    it('uses the configured measurementName when reporting latencies to InfluxDB', function() {
+        reportLatencies([]);
 
         expect(function() {
-            writePointsArguments.callback(null);
+            influxWriteInvocations[0].callback(null);
         }).to.not.throw();
 
-        expect(writePointsArguments.measurementName).to.equal('testMeasurementName');
+        expect(influxWriteInvocations[0].measurementName).to.equal('testMeasurementName');
+    });
+
+    it('does not report errors to Influx if none are reported', function() {
+        reportLatencies([]);
+
+        influxWriteInvocations[0].callback(null);
+
+        expect(influxWriteInvocations.length).to.equal(1);
+    });
+
+    it('uses the default error measurement name when reporting errors to InfluxDB', function() {
+        reportLatencies([], { ERROR: 1 });
+
+        influxWriteInvocations[0].callback(null);
+
+        expect(influxWriteInvocations[1].measurementName).to.equal('clientErrors');
+    });
+
+    it('reports both points and errors to InfluxDB', function() {
+        reportLatencies([], { ERROR: 1 });
+
+        influxWriteInvocations[0].callback(null);
+
+        expect(influxWriteInvocations[0].measurementName).to.equal('testMeasurementName');
+        expect(influxWriteInvocations[1].measurementName).to.equal('clientErrors');
+        expect(influxWriteInvocations.length).to.equal(2);
     });
 });

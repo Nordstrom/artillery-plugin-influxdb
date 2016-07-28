@@ -14,6 +14,7 @@ To use:
             "influxdb": {
                 "testName": "my_load_test_case",
                 "measurementName": "Latency",
+                "errorMeasurementName": "ClientSideErrors",
                 "testRunId": "342-233-221",
                 "tags": {
                     "environment": "joes-dev-box",
@@ -35,11 +36,20 @@ To use:
 
 This will cause every latency to be published to the given InfluxDB instance.
 
-If no `testRunId` property is provided, a UUID is generated for the run.
+## Plug-In Configuration Options
+|**Property**|**Required**|**Default**|**Meaning**|
+:----------------|:----:|:---------------:|:--------|
+`testName`        |*yes*|*none*  |Name of the test being performed.|
+`measurementName` |*no*|**latency** |Measurement name used when writing latency to DynamoDB.|
+`errorMeasurementName` |*no*|**clientErrors** |Errors raised by the Artillery client during the test.|
+`testRunId` |*no*|**UUID** |Identifier used to associate individual test results with a given test run. If no `testRunId` property is provided, a UUID is generated for the test run.|
+`tags` |*no*|*none* |Object map of static name-value pairs containing tags which are written with every measurement.|
+`influx.host` |*yes*|*none* |Network host name of the InfluxDB to which results should be written.|
+`influx.username` |*yes*\*|*none* |User account to use when logging results. |
+`influx.password` |*yes*\*|*none* |Password to use when logging results. |
+`influx.database` |*yes*|*none* |Influx Database name into which the results are written. |
 
-The `measurementName` config property is optional, 'latency' will be used by default.
-
-The `tags` property is also optional. The `testRunId` and `testName` are always written as tags with any sample reported.
+*see notes on using environment variables for these values below.
 
 ## Using environment variables to store credentials
 
