@@ -4,6 +4,7 @@ var mock = require('mock-require'),
     expect = require('chai').expect,
     path = require('path'),
     Plugin,
+    config,
     influxConstructorCalled,
     influxWriteInvocations;
 
@@ -145,7 +146,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
 
     it('will generate a testRunId if one is not provided', function() {
         expect(function() {
-            Plugin.impl.validateConfig({
+            config = Plugin.impl.validateConfig({
                 testName: 'this is a valid test name',
                 influx: {
                     host: 'my-test-host-name',
@@ -157,16 +158,16 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
         }).not.to.throw();
 
         /*jshint -W030 */
-        expect(Plugin.impl.config.tags.testRunId).not.to.be.undefined;
-        expect(Plugin.impl.config.tags.testRunId).not.to.be.null;
+        expect(config.tags.testRunId).not.to.be.undefined;
+        expect(config.tags.testRunId).not.to.be.null;
         /*jshint +W030 */
-        expect(Plugin.impl.config.tags.testRunId).to.be.a('string');
-        expect(Plugin.impl.config.tags.testRunId.length).to.equal(36);
+        expect(config.tags.testRunId).to.be.a('string');
+        expect(config.tags.testRunId.length).to.equal(36);
     });
 
     it('supports a configurable measurementName', function() {
         expect(function() {
-            Plugin.impl.validateConfig({
+            config = Plugin.impl.validateConfig({
                 testName: 'this is a valid test name',
                 measurementName: 'testLatencies',
                 influx: {
@@ -178,7 +179,7 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
             });
         }).not.to.throw();
 
-        expect(Plugin.impl.config.measurementName).to.equal('testLatencies');
+        expect(config.measurementName).to.equal('testLatencies');
     });
 });
 
