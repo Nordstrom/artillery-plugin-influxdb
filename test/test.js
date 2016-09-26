@@ -72,7 +72,45 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
                     database: 'any-db-name'
                 }
             });
-        }).to.throw();
+        }).to.throw(Error, /influx.host/);
+    });
+
+    it('requires influx.host to be a host and not include protocol or port', function() {
+        expect(function() {
+            Plugin.impl.validateConfig({
+                testName: 'this is a valid test name',
+                influx: {
+                    host: 'http://my-test-host-name',
+                    username: 'a-user',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).to.throw(Error, /influx.host/);
+
+        expect(function() {
+            Plugin.impl.validateConfig({
+                testName: 'this is a valid test name',
+                influx: {
+                    host: 'http://my-test-host-name:8080',
+                    username: 'a-user',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).to.throw(Error, /influx.host/);
+
+        expect(function() {
+            Plugin.impl.validateConfig({
+                testName: 'this is a valid test name',
+                influx: {
+                    host: 'my-test-host-name:8080',
+                    username: 'a-user',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).to.throw(Error, /influx.host/);
     });
 
     it('accepts username from the environment', function() {
@@ -163,6 +201,25 @@ describe('Artillery Influx DB plug-in must correctly validate configurations', f
         /*jshint +W030 */
         expect(config.tags.testRunId).to.be.a('string');
         expect(config.tags.testRunId.length).to.equal(36);
+    });
+
+    it('will generate a testRunId if one is not provided, unless excludeTestRunId is set', function() {
+        expect(function() {
+            config = Plugin.impl.validateConfig({
+                testName: 'this is a valid test name',
+                excludeTestRunId: true,
+                influx: {
+                    host: 'my-test-host-name',
+                    username: 'a-user',
+                    password: 'p@ssw0rd',
+                    database: 'any-db-name'
+                }
+            });
+        }).not.to.throw();
+
+        /*jshint -W030 */
+        expect(config.tags.testRunId).to.be.undefined;
+        /*jshint +W030 */
     });
 
     it('supports a configurable measurementName', function() {
