@@ -277,6 +277,14 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
         });
     }
 
+    function reportLatenciesNewSchema(latencies, errors) {
+        // Simulate artillery results event by calling into the report function
+        onEventHooks[0].actualReportFunction({
+            _entries: latencies,
+            _errors: errors
+        });
+    }
+
     beforeEach(function() {
         influxWriteInvocations = [];
         onEventHooks = [];
@@ -310,6 +318,19 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
         /*jshint +W030 */
     });
 
+    it('uses influx to write results once stats event is raised - supports updated schema', function() {
+        /*jshint -W030 */
+        expect(onEventHooks[0].actualReportFunction).to.not.be.null;
+        expect(onEventHooks[0].actualReportFunction).to.not.be.undefined;
+        /*jshint +W030 */
+
+        reportLatenciesNewSchema([]);
+
+        /*jshint -W030 */
+        expect(influxWriteInvocations[0].points).to.not.be.null;
+        /*jshint +W030 */
+    });
+
     it('will raise an exception if an error is returned when reporting to InfluxDB', function() {
         reportLatencies([]);
 
@@ -320,6 +341,14 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
 
     it('will not raise an exception if an error is not returned when reporting from InfluxDB', function() {
         reportLatencies([]);
+
+        expect(function() {
+            influxWriteInvocations[0].callback(null);
+        }).to.not.throw();
+    });
+
+    it('will not raise an exception if an error is not returned when reporting from InfluxDB when new schema is used', function() {
+        reportLatenciesNewSchema([]);
 
         expect(function() {
             influxWriteInvocations[0].callback(null);
