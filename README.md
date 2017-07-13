@@ -24,7 +24,7 @@ To use:
                     "host": "my.influx.server.com",
                     "username": "joe_developer",
                     "password": "1t`sA$3cr3t",
-                    "database": "load_test_results"
+                    "database": "load_test_results",
                     "matches": "show" 
                 }
             }
