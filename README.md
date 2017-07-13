@@ -24,19 +24,13 @@ To use:
                     "host": "my.influx.server.com",
                     "username": "joe_developer",
                     "password": "1t`sA$3cr3t",
-                    "database": "load_test_results",
-                    "matches": "show" 
+                    "database": "load_test_results"
                 }
             }
         }
       }
     }
     ```
-    
-    > *NOTE*: The last line of the config is optional, you DO NOT need to add it and the plugin will still work. 
-    "matches" reports how many matches were found when the artillery script was ran to the InfluxDB. If you are not using 
-    the matches feature provided by artillery, you will have a column called matches filled with null data that will do 
-    nothing but take up space. Delete that line of code to prevent that column from appearing.
 
 4. `artillery run hello.json`
 
@@ -55,6 +49,7 @@ This will cause every latency to be published to the given InfluxDB instance.
 `influx.password` |*yes*\*|*none* |Password to use when logging results. |
 `influx.database` |*yes*|*none* |Influx Database name into which the results are written. |
 `excludeTestRunId` |*no*|*none* |Set to true to prevent plugin from generating/logging testRunId UUID's automatically. |
+`matches` |*no*|*none*|Send data regarding matches to InfluxDB with column name "matches"
 
 *see notes on using environment variables for these values below.
 
