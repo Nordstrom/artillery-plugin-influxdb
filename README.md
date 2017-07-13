@@ -25,12 +25,18 @@ To use:
                     "username": "joe_developer",
                     "password": "1t`sA$3cr3t",
                     "database": "load_test_results"
+                    "matches": "show" 
                 }
             }
         }
       }
     }
     ```
+    
+    > *NOTE*: The last line of the config is optional, you DO NOT need to add it and the plugin will still work. 
+    "matches" reports how many matches were found when the artillery script was ran to the InfluxDB. If you are not using 
+    the matches feature provided by artillery, you will have a column called matches filled with null data that will do 
+    nothing but take up space. Delete that line of code to prevent that column from appearing.
 
 4. `artillery run hello.json`
 
