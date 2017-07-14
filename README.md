@@ -49,7 +49,7 @@ This will cause every latency to be published to the given InfluxDB instance.
 `influx.password` |*yes*\*|*none* |Password to use when logging results. |
 `influx.database` |*yes*|*none* |Influx Database name into which the results are written. |
 `excludeTestRunId` |*no*|*none* |Set to true to prevent plugin from generating/logging testRunId UUID's automatically. |
-`matches` |*no*|*none*|Send data regarding matches to InfluxDB with column name "matches"
+`matches` |*no*|*none*|Send data regarding matches to InfluxDB with column name "matches"|
 
 *see notes on using environment variables for these values below.
 
