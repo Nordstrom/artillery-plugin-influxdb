@@ -370,15 +370,14 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
 
         influxWriteInvocations[0].callback(null);
 
-        expect(influxWriteInvocations.length).to.equal(1);
+        expect(influxWriteInvocations.length).to.equal(2);
     });
 
     it('uses the default error measurement name when reporting errors to InfluxDB', function() {
         reportLatencies([], { ERROR: 1 });
-
         influxWriteInvocations[0].callback(null);
 
-        expect(influxWriteInvocations[1].measurementName).to.equal('clientErrors');
+        expect(influxWriteInvocations[2].measurementName).to.equal('clientErrors');
     });
 
     it('reports both points and errors to InfluxDB', function() {
@@ -387,7 +386,8 @@ describe('Artillery Influx DB plug-in must report results once testing is comple
         influxWriteInvocations[0].callback(null);
 
         expect(influxWriteInvocations[0].measurementName).to.equal('testMeasurementName');
-        expect(influxWriteInvocations[1].measurementName).to.equal('clientErrors');
-        expect(influxWriteInvocations.length).to.equal(2);
+        expect(influxWriteInvocations[1].measurementName).to.equal('Concurrency');
+        expect(influxWriteInvocations[2].measurementName).to.equal('clientErrors');
+        expect(influxWriteInvocations.length).to.equal(3);
     });
 });
