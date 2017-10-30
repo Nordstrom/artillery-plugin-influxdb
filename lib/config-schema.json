@@ -1,0 +1,116 @@
+{
+    "definitions": {
+        "json-path-query": {
+            "type": "string",
+            "pattern": "^\\$\\.(sample|testReport)"
+        },
+        "query-map": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": { "$ref": "#/definitions/json-path-query" }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        },
+        "string-map": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": { "type": "string" }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        },
+        "string-number-map": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "oneOf": [
+                        { "type": "string" },
+                        { "type": "number" }
+                    ]
+                }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        },
+        "fields-measure-descriptor": {
+            "type": "object",
+            "properties": {
+                "queries": {
+                    "type": "object",
+                    "properties": {
+                        "value": { "$ref": "#/definitions/json-path-query" }
+                    },
+                    "patternProperties": {
+                        "^.*$": { "$ref": "#/definitions/json-path-query" }
+                    },
+                    "required": [ "value" ],
+                    "additionalProperties": false
+                },
+                "defaults": { "$ref": "#/definitions/string-number-map" },
+                "mappers": { "$ref": "#/definitions/string-map" },
+                "reducers": { "$ref": "#/definitions/string-map" }
+            },
+            "required": [ "queries" ],
+            "additionalProperties": false
+        },
+        "tags-measure-descriptor": {
+            "type": "object",
+            "properties": {
+                "queries": { "$ref": "#/definitions/query-map" },
+                "defaults": { "$ref": "#/definitions/string-number-map" },
+                "mappers": { "$ref": "#/definitions/string-map" },
+                "reducers": { "$ref": "#/definitions/string-map" }
+            },
+            "minProperties": 1,
+            "anyOf": [
+                { "required": [ "queries" ] },
+                { "required": [ "defaults" ] }
+            ],
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "properties": {
+        "testName": { "type": "string" },
+        "measurementName": { "type": "string" },
+        "errorMessageName": { "type": "string" },
+        "testRunId": { "type": "string" },
+        "excludeTestRunId": { "type": "boolean" },
+        "matches": { "type": "boolean" },
+        "tags": { "$ref": "#/definitions/string-map" },
+        "influx": {
+            "type": "object",
+            "properties": {
+                "host": { "type": "string" },
+                "username": { "type": "string" },
+                "password": { "type": "string" },
+                "database": { "type": "string" }
+            },
+            "required": [ "host", "database" ],
+            "additionalProperties": false
+        },
+        "measurements": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "type": "object",
+                    "properties": {
+                        "granularity": {
+                            "type": "string",
+                            "enum": [ "sample", "report" ]
+                        },
+                        "fields": { "$ref": "#/definitions/fields-measure-descriptor" },
+                        "tags": { "$ref": "#/definitions/tags-measure-descriptor" }
+                    },
+                    "required": [ "granularity", "fields" ],
+                    "additionalProperties": false
+                }
+            },
+            "minProperties": 1,
+            "additionalProperties": false
+        }
+    },
+    "required": [ "influx" ],
+    "additionalProperties": false
+}
