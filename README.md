@@ -44,7 +44,9 @@ This will cause every latency to be published to the given InfluxDB instance.
 `errorMeasurementName` |*no*|**clientErrors** |Errors raised by the Artillery client during the test.|
 `testRunId` |*no*|**UUID** |Identifier used to associate individual test results with a given test run. If no `testRunId` property is provided, a UUID is generated for the test run.|
 `tags` |*no*|*none* |Object map of static name-value pairs containing tags which are written with every measurement.|
+`influx` |*yes*|*none*|Influx module configuration object, see select options below, see [full documentation](https://node-influx.github.io/class/src/index.js~InfluxDB.html#instance-constructor-constructor) for complete details.|
 `influx.host` |*yes*|*none* |Network host name of the InfluxDB to which results should be written. **No protocol or port, just the host name.**|
+`influx.port` |*no*|8086|Port on which the InfluxDB connection is to be opened.|
 `influx.username` |*yes*\*|*none* |User account to use when logging results. |
 `influx.password` |*yes*\*|*none* |Password to use when logging results. |
 `influx.database` |*yes*|*none* |Influx Database name into which the results are written. |
