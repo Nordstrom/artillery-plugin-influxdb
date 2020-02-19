@@ -40,7 +40,7 @@ This will cause every latency to be published to the given InfluxDB instance.
 |**Property**|**Required**|**Default**|**Meaning**|
 :----------------|:----:|:---------------:|:--------|
 `testName`        |*yes*|*none*  |Name of the test being performed.|
-`measurementName` |*no*|**latency** |Measurement name used when writing latency to DynamoDB.|
+`measurementName` |*no*|**latency** |Measurement name used when writing latency to InfluxDB.|
 `errorMeasurementName` |*no*|**clientErrors** |Errors raised by the Artillery client during the test.|
 `testRunId` |*no*|**UUID** |Identifier used to associate individual test results with a given test run. If no `testRunId` property is provided, a UUID is generated for the test run.|
 `tags` |*no*|*none* |Object map of static name-value pairs containing tags which are written with every measurement.|
