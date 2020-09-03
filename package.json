@@ -29,7 +29,6 @@
   "homepage": "https://github.com/nordstrom/artillery-plugin-influxdb#readme",
   "dependencies": {
     "influx": "^5.5.3",
-    "influx": "^4.2.0",
     "uuid": "^2.0.2",
     "snyk": "^1.316.1"
   },
